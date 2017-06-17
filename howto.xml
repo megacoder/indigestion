@@ -1,0 +1,244 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.3//EN"
+"http://www.oasis-open.org/docbook/xml/4.3/docbookx.dtd">
+<article lang="en">
+  <title>The INGEST Digest</title>
+  <articleinfo>
+    <author>
+      <firstname>Tommy</firstname>
+      <surname>Reynolds</surname>
+    </author>
+  </articleinfo>
+  <section id="sn-intro">
+    <title>Introduction</title>
+    <para>
+      Airborne media are extremely expensive, in the range of $30,000 each.
+      To minimize the number of media required for a test program, it is desired to <wordasword>ingest</wordasword> the media onto the <abbrev>TDRS</abbrev>
+      <abbrev>RAID</abbrev> storage as expeditiously as possible.
+    </para>
+  </section>
+  <section id="sn-ingest">
+    <title>Ingest</title>
+    <para>
+      The process of transferring flight test data from the airborne media onto the <citetitle	>Archive</citetitle> <abbrev>RAID</abbrev> is referred to as an <wordasword>ingest</wordasword>.
+    </para>
+    <procedure id="pr-ingest">
+      <title>How To Ingest</title>
+      <step>
+        <para>
+          Review content of <filename>/usr/tdrs/shared/cfg/archive.xml</filename> on the <systemitem class="systemname">DB1</systemitem> to ensure the information for the &lt;x:dbu&gt; item is for the system you want to use.
+        </para>
+      </step>
+      <step>
+        <para>
+          Verify the media copy servers are set correctly.
+        </para>
+      </step>
+      <step>
+        <para>
+          Point to <abbrev>DAR1</abbrev> devicve to be used.
+        </para>
+      </step>
+      <step>
+        <para>
+          Raid partitions should point to <abbrev>TBD</abbrev>.
+        </para>
+      </step>
+      <step>
+        <para>
+          Copy, via FTP, the <literal>RAW</literal> and <literal>TAG</literal> directories to <filename>/usr/tdrs/archive/</filename><replaceable>username</replaceable><filename>/work/</filename><replaceable>label</replaceable><filename>/</filename><replaceable>date</replaceable><filename>/</filename> for historical purposes.
+        </para>
+      </step>
+      <step>
+        <para>
+          Pickle the servers you will need:
+        </para>
+        <itemizedlist>
+          <listitem>
+          <para>
+            MCB - Media Copy Server
+          </para>
+          </listitem>
+          <listitem>
+            <para>
+              TBD - TBD
+            </para>
+          </listitem>
+        </itemizedlist>
+      </step>
+      <step>
+        <para>
+          Do the copies:
+        </para>
+        <screen>
+        <prompt>$ </prompt><userinput>newMediaCopyJob -h</userinput>
+        </screen>
+      </step>
+      <step>
+        <para>
+          While the program runs, watch the log files in the <filename>/usr/tdrs/shared/log</filename> directory.
+        </para>
+      </step>
+      <step>
+        <para>
+          <filename>RAID_new_data</filename>
+        </para>
+      </step>
+      <step>
+        <para>
+        </para>
+      </step>
+    </procedure>
+  </section>
+  <section id="sn-process">
+    <title>Data Request Processing</title>
+    <para>
+      Here is how to actually process some data:
+    </para>
+    <procedure id="pr-process">
+      <title>How To Process Data</title>
+      <step>
+        <para>
+          Log in to <systemitem class="systemname">DB3</systemitem> as user <systemitem class="username">dpgs</systemitem>:
+        </para>
+        <screen>
+          <prompt>$ </prompt><userinput>ssh dpgs@db3</userinput>
+        </screen>
+      </step>
+      <step>
+        <para>
+          Begin the beguine:
+        </para>
+        <screen>
+          <prompt>$ </prompt><userinput>startup</userinput>
+        </screen>
+      </step>
+      <step>
+        <para>
+          Files may be in <filename>/usr/tdrs/shared/historical/NoGood/</filename>; if not, you may have it squirreled away.
+        </para>
+      </step>
+      <step>
+        <para>
+          Copy the file to the <filename>../../incoming/</filename> directory to start the ball rolling.
+        </para>
+      </step>
+      <step>
+        <para>
+          Run <application>getHoldAreaStatus</application> to see if the job is running.
+        </para>
+      </step>
+      <step>
+        <para>
+          You may want to check the files in <filename>/usr/tdrs/shared/jobs/</filename><replaceable>jobno</replaceable><filename>/</filename> to watch the output <filename>.h5</filename> file growing as results are placed in it.
+        </para>
+      </step>
+      <step>
+        <para>
+          Be aware that some servers may be running on a different machine...
+        </para>
+      </step>
+    </procedure>
+  </section>
+  <section id="sn-reset">
+    <title>Media Reformating</title>
+    <para>
+      This procedure must be done on a machine that is connected to the recorder via a serial cable.
+    </para>
+    <procedure id="pr-reset">
+      <title>Recorder Module Re-initialization Procedure</title>
+      <step>
+        <para>
+          Connect serial cable to RS-232 port and recorder.
+        </para>
+      </step>
+      <step>
+        <para>
+          Type <userinput>sys</userinput> and the recorder should respond with a <prompt>system&gt;</prompt> prompt.
+        </para>
+      </step>
+      <step>
+        <para>
+          Enter <userinput>media 0 reset</userinput> and the system should respond with:
+        </para>
+        <screen>
+          All Data will be Destroyed.
+          Press 'C' to continue and any other key to exit.
+        </screen>
+      </step>
+      <step>
+        <para>
+          Reset the recorder by either cycling power or the <userinput>reset</userinput> command.
+        </para>
+      </step>
+      <step>
+        <para>
+          After the recorder has rebooted, type <userinput>sys</userinput> and sooner or later the recorder should issue the <prompt>system&gt;</prompt> prompt.
+        </para>
+      </step>
+      <step>
+        <para>
+          Set the system type to <wordasword>6</wordasword> for the Boeing 787 project:
+        </para>
+        <screen>
+          <prompt>system&gt;</prompt> <userinput>systemtype 6</userinput>
+        </screen>
+      </step>
+      <step>
+        <para>Create two partitions:</para>
+        <screen>
+          <prompt>system&gt;</prompt> <userinput>storage 0 Partition0 4 0 0 50</userinput>
+          <prompt>system&gt;</prompt> <userinput>storage 1 Partition1 1 0 1 50</userinput>
+        </screen>
+      </step>
+      <step>
+        <para>
+          Create a logical recorder for each partition:
+        </para>
+        <screen>
+          <prompt>system&gt;</prompt> <userinput>recorder 0 Flash0 1 0 0</userinput>
+          <prompt>system&gt;</prompt> <userinput>recorder 1 Flash1 1 1 0</userinput>
+        </screen>
+      </step>
+      <step>
+        <para>
+          Enable the TCP/IP layer:
+        </para>
+        <screen>
+          <prompt>system&gt;</prompt> <userinput>inethost 1</userinput>
+          <computeroutput>iNetHost 1</computeroutput>
+        </screen>
+      </step>
+      <step>
+        <para>
+          Define two control ports, one for telnet, another for SNMP:
+        </para>
+        <screen>
+          <prompt>system&gt;</prompt> <userinput>controlport 5520 5540</userinput>
+          <computeroutput>ControlPort 5520 5540</computeroutput>
+        </screen>
+      </step>
+      <step>
+        <para>
+          The hostname setting is the nodename key in the <abbrev>DARMS</abbrev> file.
+        </para>
+      </step>
+      <step>
+        <para>
+          Label the media:
+        </para>
+        <screen>
+          <prompt>system&gt;</prompt> <userinput>media 0 title &quot;<replaceable>FTxxxxx</replaceable>&quot;</userinput>
+        </screen>
+      </step>
+      <step>
+        <para>
+          Set the recorder <abbrev>FTID</abbrev>:
+        </para>
+        <screen>
+          <prompt>system&gt;</prompt> <userinput>systemid &quot;<replaceable>Some FTID String</replaceable>&quot;</userinput>
+        </screen>
+      </step>
+    </procedure>
+  </section>
+</article>
